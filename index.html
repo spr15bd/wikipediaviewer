@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+	<style>
+		body {  
+  			margin: 0;  
+		}
+		.container-fluid {
+  			padding-top: 15%;
+  			padding-bottom: 50%;
+  			text-align: center;
+  			background-color: rgb(20,20,20);
+  			color: white;
+		}
+		.title {
+  			padding-bottom: 3%;
+		}
+		input {
+  			width: 70px;
+  			-webkit-transition: width 0.4s ease-in-out;
+  			transition: width 0.4s ease-in-out;
+  
+		}
+		input:focus {
+  			width: 25%;
+		}
+		.search-text {
+  			padding-bottom: 2%;
+		}
+		.search-field {
+  			padding-bottom: 2%;
+		}
+		.articles-bar {
+  			background-color: rgb(20,20,20);
+  			margin: 6px auto;
+  			border: 3px;
+  			border-style: solid;
+  			border-radius: 3px;
+  			border-left-color: black;
+  			border-top-color: black;
+  			border-right-color: black;
+  			border-bottom-color: black;
+  			width:75%;
+		}
+		.articles-bar:hover {
+  			background-color: black;
+		}
+		.wiki-content {
+  			text-align: center;
+  			padding-top: 2%;
+		}
+	</style>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="container-fluid">
+  			<div class="title">
+    				<img src="https://kf4c9q-db3pap001.files.1drv.com/y4mzmV367dLrG3R2k_iGlF4aEiuTea7FzaXfwfDwHMhqMaRukFF3tStBYMbV6a16Lp3yXOKw18uYuIq4bWXcYs3Ko7Uhmi2U6070fVwA94oW8kpUfabJ0LuIsSqigaPvAbVzCgP3SztswMPgIMurLtHogNhq_yfXzfe0DAlmygBchxd8s_XMDWTSI4jyh3UFzWHL8BgGgmGjpr7-_BmozD_IA?width=319&height=54&cropmode=none">
+  			</div>
+  			<div class="search-text">
+    				Click to search
+  			</div>
+  			<div class="search-field">
+    				<input type="text" id="wiki-subject" name="search" placeholder="Search..."/>
+  			</div>
+  			<div class="queries">
+    				<a href = "https://en.wikipedia.org/wiki/Special:Random" target="_blank">Click here to find a random article</a>
+    				<div class="wiki-content"></div>
+  			</div>
+		</div>
+		<script>
+			var urlRequest;
+			$(document).ready(function(){
+  				$(".articles-bar").on("mouseover", function(){
+    					$("div").css("background-color", "pink");
+    				});
+  				$("input").on("keypress", function(e){
+    					var code = e.keyCode || e.which;
+    					if(code==13){
+      						var subject=$("#wiki-subject").val();
+      						$(".wiki-content").html("");
+      						urlRequest = "https://en.wikipedia.org/w/api.php?action=opensearch&search="+subject+"&format=json";
+      						$.ajax({
+        						type: "GET",
+        						cache: false,
+        						url: urlRequest,
+        						dataType: "jsonp",
+        						success: function(response) {
+          							console.log("success");
+          							var articleList=response[1];
+          							for (var i=0; i<articleList.length; i++) {
+            								articleStr=articleList[i];
+            								articleStrModified=articleStr.replace(/ /g, "%20");
+            								var url="https://en.wikipedia.org/wiki/"+articleStrModified;
+            								$(".wiki-content").append("<div class=\"articles-bar\"><a href="+url+" target=\"_blank\">"+articleStr+"</a><p>"+response[2][i]+"</p></div>");
+          							}
+        						}
+      						});
+    					}
+  				});
+			});
+		</script>
+	</body>
+</html>
